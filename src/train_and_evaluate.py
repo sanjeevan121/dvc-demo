@@ -48,9 +48,35 @@ def train_and_evaluate(config_path):
     predicted_qualities=predicted_qualities.reshape(len(y_test),1)
     (rmse,mae,r2) = eval_metrics(y_test,predicted_qualities)
 
-    filename = 'finalized_model.sav'
-    joblib.dump(lr, os.path.join(model_dir,filename))
+    print("Elasticnet model (alpha=%f, l1_ratio=%f):" % (alpha, l1_ratio))
+    print("  RMSE: %s" % rmse)
+    print("  MAE: %s" % mae)
+    print("  R2: %s" % r2)
 
+    scores_file = config["reports"]["scores"]
+    params_file = config["reports"]["params"]
+
+    with open(scores_file, "w") as f:
+        scores = {
+            "rmse": rmse,
+            "mae": mae,
+            "r2": r2
+        }
+        json.dump(scores, f,indent=2)
+
+    with open(params_file, "w") as f:
+        params = {
+            "alpha": alpha,
+            "l1_ratio": l1_ratio,
+        }
+        json.dump(params, f,indent=2)
+
+
+
+    os.makedirs(model_dir, exist_ok=True)
+    model_path = os.path.join(model_dir, "model.joblib")
+
+    joblib.dump(lr, model_path)
 
 
 if __name__ == '__main__':
