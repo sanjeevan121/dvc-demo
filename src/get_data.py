@@ -8,7 +8,8 @@ def get_data(config_path):
     config=read_params(config_path)
     data_path=config['data_source']['s3_source']
     df=pd.read_csv(data_path,sep=',',encoding='utf-8')
-    print(df.head())
+    #print(df.head())
+    return df
    # print(config)
 def read_params(config_path):
     with open(config_path) as yaml_file:
